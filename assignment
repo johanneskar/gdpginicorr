@@ -1,5 +1,13 @@
 import pandas as pd
 import numpy as np
 
-dfgdp = pd.read_csv("/home/john/Documents/tabellen/gdp-per-capita-maddison-2020.csv")
-dfgini = pd.read_csv("/home/john/Documents/tabellen/economic-inequality-gini-index.csv")
+dfgdp = pd.read_csv("https://raw.githubusercontent.com/johanneskar/gdpginicorr/main/gdp-per-capita-maddison-2020.csv")
+dfgini = pd.read_csv("https://raw.githubusercontent.com/johanneskar/gdpginicorr/main/economic-inequality-gini-index.csv")
+df = pd.merge(dfgdp, dfgini)
+df2 = df.drop(columns=['Code', '417485-annotations'])
+df3 = df2.groupby(['Entity'])[['GDP per capita', 'Gini coefficient']].corr()
+df3.index = df3.index.get_level_values(0)
+df4 = df3.loc[(df3['GDP per capita']==1)]
+df4.columns=['GDP', 'correlation between GDP per capita and Gini coefficient']
+df5 = df4.drop(['GDP'], axis=1)
+df5.describe()
